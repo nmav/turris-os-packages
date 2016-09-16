@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/syslog-ng3
   SECTION:=admin
   CATEGORY:=Administration
-  DEPENDS:=+libpcre +glib2 +libeventlog +libopenssl +libwrap +libpthread +librt +zlib +libdbi +psmisc
+  DEPENDS:=+libpcre +glib2 +libeventlog +libopenssl +libwrap +libpthread +librt +zlib +libdbi +psmisc $(ICONV_DEPENDS) $(INTL_DEPENDS)
   TITLE:=A powerful syslog daemon
   URL:=http://www.balabit.com/network-security/syslog-ng/opensource-logging-system/
 endef
@@ -65,6 +65,9 @@ CONFIGURE_ARGS +=  \
 
 TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/usr/include/eventlog
+
+TARGET_LDFLAGS += \
+	$(if $(ICONV_FULL),-liconv)
 
 CONFIGURE_VARS += \
 	LIBDBI_CFLAGS="-I$(STAGING_DIR)/usr/include"
