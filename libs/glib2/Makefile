@@ -18,7 +18,7 @@ PKG_MD5SUM:=7f815d6e46df68e070cb421ed7f1139e
 
 PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=glib2/host libpthread zlib libiconv-full libintl libffi
+PKG_BUILD_DEPENDS:=glib2/host libpthread zlib $(if $(ICONV_FULL),libiconv-full,libiconv) $(if $(INTL_FULL),libintl-full,libintl) libffi
 HOST_BUILD_DEPENDS:=gettext-full/host libiconv/host libffi/host
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
@@ -45,18 +45,15 @@ define Package/glib2/description
 endef
 
 HOST_CONFIGURE_ARGS += \
-	--with-libiconv=no \
-  --disable-selinux
-
-TARGET_CONFIGURE_ARGS += \
-	--with-libiconv=gnu
+	--with-libiconv=no
 
 CONFIGURE_ARGS += \
 	--enable-shared \
 	--enable-static \
 	--enable-debug=no \
 	--disable-selinux \
-	--disable-fam
+	--disable-fam \
+	$(if $(ICONV_FULL),--with-libiconv=gnu,--with-libiconv=no)
 
 CONFIGURE_VARS += \
 	glib_cv_stack_grows=no \
@@ -103,6 +100,10 @@ define Package/glib2/install
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/lib/*.so* \
 		$(1)/usr/lib/
+endef
+
+define Hooks/HostInstall/Post
+	$(if $(ICONV_FULL),find $(STAGING_DIR_HOST) -name glib-2.0.pc -exec sed -i 's|^\(Libs.private:\)|\1 -liconv|' \{\} \;)
 endef
 
 $(eval $(call HostBuild))
