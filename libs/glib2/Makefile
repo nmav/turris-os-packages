@@ -19,7 +19,7 @@ PKG_MD5SUM:=397ead3fcf325cb921d54e2c9e7dfd7a
 PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=glib2/host libpthread zlib libintl libffi
-HOST_BUILD_DEPENDS:=gettext-full/host libiconv/host libffi/host
+HOST_BUILD_DEPENDS:=gettext-full/host libiconv-full/host libffi/host
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
 
@@ -46,7 +46,7 @@ endef
 
 HOST_CONFIGURE_ARGS += \
 	--disable-selinux \
-	--with-libiconv=no \
+	--with-libiconv=gnu \
 	--with-pcre=internal
 
 CONFIGURE_ARGS += \
